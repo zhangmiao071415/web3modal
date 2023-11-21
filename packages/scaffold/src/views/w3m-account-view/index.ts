@@ -68,6 +68,7 @@ export class W3mAccountView extends LitElement {
       NetworkController.subscribeKey('caipNetwork', val => {
         if (val?.id) {
           this.network = val
+          this.initializeOnRamp()
         }
       })
     )
@@ -79,10 +80,6 @@ export class W3mAccountView extends LitElement {
   }
 
   public override firstUpdated() {
-    this.initializeOnRamp()
-  }
-
-  public override updated() {
     this.initializeOnRamp()
   }
 
@@ -158,6 +155,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="blue"
           icon="swapHorizontalBold"
           iconSize="sm"
+          .loading=${!this.onrampInstance}
           ?chevron=${true}
           @click=${this.handleClickPay.bind(this)}
         >
@@ -232,6 +230,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private initializeOnRamp() {
+    console.log('init onramp')
     const networkName = this.network?.name
     const address = this.address
 
@@ -245,6 +244,10 @@ export class W3mAccountView extends LitElement {
 
     const coinbaseChainName =
       ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP?.[networkName as CaipNetworkCoinbaseNetwork]
+
+    if (this.onrampInstance) {
+      this.onrampInstance.destroy()
+    }
 
     initOnRamp(
       {
@@ -264,6 +267,7 @@ export class W3mAccountView extends LitElement {
         closeOnSuccess: true
       },
       (_, instance) => {
+        console.log('init onramp: ready')
         this.onrampInstance = instance
       }
     )
