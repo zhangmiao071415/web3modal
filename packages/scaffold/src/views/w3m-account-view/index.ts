@@ -1,6 +1,5 @@
 import {
   AccountController,
-  ConnectorController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -49,10 +48,6 @@ export class W3mAccountView extends LitElement {
 
   @state() private disconecting = false
 
-  @state() private connectors = ConnectorController.state.connectors
-
-  @state() private connectorId = ConnectionController.state.connectorId
-
   public constructor() {
     super()
     this.usubscribe.push(
@@ -67,12 +62,6 @@ export class W3mAccountView extends LitElement {
           } else {
             ModalController.close()
           }
-        }),
-        ConnectorController.subscribeKey('connectors', connectors => {
-          this.connectors = connectors
-        }),
-        ConnectionController.subscribeKey('connectorId', connectorId => {
-          this.connectorId = connectorId
         })
       ],
       NetworkController.subscribeKey('caipNetwork', val => {
@@ -240,7 +229,6 @@ export class W3mAccountView extends LitElement {
   }
 
   private initializeOnRamp() {
-    console.log('init onramp')
     const networkName = this.network?.name
     const address = this.address
 
@@ -258,10 +246,6 @@ export class W3mAccountView extends LitElement {
     if (this.onrampInstance) {
       this.onrampInstance.destroy()
     }
-
-    console.log('this.connectorID', this.connectorId)
-    console.log('this.connectors', this.connectors)
-    console.log(AccountController.state)
 
     initOnRamp(
       {
@@ -282,7 +266,6 @@ export class W3mAccountView extends LitElement {
         closeOnSuccess: true
       },
       (_, instance) => {
-        console.log('init onramp: ready')
         this.onrampInstance = instance
       }
     )
