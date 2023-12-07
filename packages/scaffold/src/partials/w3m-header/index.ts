@@ -21,6 +21,7 @@ function headings() {
   return {
     Connect: 'Connect Wallet',
     Account: undefined,
+    AccountSettings: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingSiwe: 'Sign In',

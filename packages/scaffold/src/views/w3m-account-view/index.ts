@@ -2,15 +2,16 @@ import {
   AccountController,
   ConnectionController,
   CoreHelperUtil,
-  EventsController,
   ModalController,
   NetworkController,
   RouterController,
   SnackController,
   ConstantsUtil,
   AssetUtil
-  ConnectorController,
-  StorageUtil
+  StorageUtil,
+  EventsController,
+  ConnectionController,
+  SnackController
 } from '@web3modal/core'
 import type { CaipNetworkCoinbaseNetwork } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -32,7 +33,7 @@ export class W3mAccountView extends LitElement {
   public static override styles = styles
 
   // -- Members -------------------------------------------- //
-  private usubscribe: (() => void)[] = []
+  private unsubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
@@ -49,11 +50,11 @@ export class W3mAccountView extends LitElement {
 
   @state() private onrampInstance: CBPayInstanceType | null = null
 
-  @state() private disconecting = false
+  @state() private disconnecting = false
 
   public constructor() {
     super()
-    this.usubscribe.push(
+    this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
           if (val.address) {
@@ -77,7 +78,7 @@ export class W3mAccountView extends LitElement {
   }
 
   public override disconnectedCallback() {
-    this.usubscribe.forEach(unsubscribe => unsubscribe())
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.onrampInstance?.destroy()
   }
 
@@ -146,7 +147,6 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="networkPlaceholder"
           imageSrc=${ifDefined(networkImage)}
-          ?chevron=${this.isAllowedNetworkSwitch()}
           @click=${this.onNetworks.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-100">
@@ -177,7 +177,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="disconnect"
           ?chevron=${false}
-          .loading=${this.disconecting}
+          .loading=${this.disconnecting}
           @click=${this.onDisconnect.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
@@ -212,6 +212,39 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private onTransactions() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
+    RouterController.push('Transactions')
+  }
+
+  private async onDisconnect() {
+    try {
+      this.disconnecting = true
+      await ConnectionController.disconnect()
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
+      ModalController.close()
+    } catch {
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
+      SnackController.showError('Failed to disconnect')
+    } finally {
+      this.disconnecting = false
+    }
+  }
+
+  private isAllowedNetworkSwitch() {
+    const { requestedCaipNetworks } = NetworkController.state
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
+
+    return isMultiNetwork || !isValidNetwork
+  }
+
+  private onNetworks() {
+    if (this.isAllowedNetworkSwitch()) {
+      RouterController.push('Networks')
+    }
+  }
+
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const emailConnector = ConnectorController.getEmailConnector()
