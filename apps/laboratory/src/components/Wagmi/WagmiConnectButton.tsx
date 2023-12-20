@@ -37,17 +37,12 @@ const message = {
 export function WagmiConnectButton() {
   const toast = useToast()
   const { isConnected } = useAccount()
-  const { signMessageAsync } = useSignMessage({ message: 'Hello Web3Modal!' })
-  const { signTypedDataAsync } = useSignTypedData({
-    domain,
-    message,
-    primaryType: 'Mail',
-    types
-  })
+  const { signMessageAsync } = useSignMessage()
+  const { signTypedDataAsync } = useSignTypedData()
 
   async function onSignMessage() {
     try {
-      const signature = await signMessageAsync()
+      const signature = await signMessageAsync({ message: 'Hello Web3Modal!' })
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch {
       toast({
