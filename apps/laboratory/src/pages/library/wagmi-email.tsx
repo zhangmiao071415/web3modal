@@ -1,7 +1,9 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
-import { WagmiConfig } from 'wagmi'
+import { WagmiProvider } from 'wagmi'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import {
   arbitrum,
   aurora,
@@ -19,6 +21,9 @@ import {
 import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
 import { NetworksButton } from '../../components/NetworksButton'
 import { ThemeStore } from '../../utils/StoreUtil'
+
+// 0. Setup queryClient for WAGMIv2
+const queryClient = new QueryClient()
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -46,7 +51,8 @@ const metadata = {
   name: 'Web3Modal',
   description: 'Web3Modal Laboratory',
   url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
+  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  verifyUrl: ''
 }
 
 export const wagmiConfig = defaultWagmiConfig({
@@ -76,18 +82,20 @@ export default function Wagmi() {
   }, [])
 
   return ready ? (
-    <WagmiConfig config={wagmiConfig}>
-      <Center paddingTop={10}>
-        <Text fontSize="xl" fontWeight={700}>
-          Wagmi with email
-        </Text>
-      </Center>
-      <Center h="65vh">
-        <VStack gap={4}>
-          <WagmiConnectButton />
-          <NetworksButton />
-        </VStack>
-      </Center>
-    </WagmiConfig>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <Center paddingTop={10}>
+          <Text fontSize="xl" fontWeight={700}>
+            Wagmi with email
+          </Text>
+        </Center>
+        <Center h="65vh">
+          <VStack gap={4}>
+            <WagmiConnectButton />
+            <NetworksButton />
+          </VStack>
+        </Center>
+      </QueryClientProvider>
+    </WagmiProvider>
   ) : null
 }

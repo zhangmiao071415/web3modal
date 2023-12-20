@@ -21,6 +21,7 @@ import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
 import { NetworksButton } from '../../components/NetworksButton'
 import { ThemeStore } from '../../utils/StoreUtil'
 
+// 0. Setup queryClient for WAGMIv2
 const queryClient = new QueryClient()
 
 // 1. Get projectId
