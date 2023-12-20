@@ -38,7 +38,9 @@ function headings() {
     Transactions: 'Activity',
     UpgradeEmailWallet: 'Upgrade your Wallet',
     UpdateEmailWallet: 'Edit Email',
-    UpdateEmailWalletWaiting: 'Approve Email'
+    UpdateEmailWalletWaiting: 'Approve Email',
+    OnRampProviders: 'Choose Provider',
+    OnRampActivity: 'Activity'
   }
 }
 
