@@ -162,6 +162,7 @@ export type VisualType =
   | 'noun'
   | 'profile'
   | 'system'
+  | 'coinbase'
 
 export type LogoType =
   | 'apple'
