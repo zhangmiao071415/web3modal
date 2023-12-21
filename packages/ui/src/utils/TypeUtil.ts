@@ -99,7 +99,9 @@ export type IconType =
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
+  | 'bank'
   | 'browser'
+  | 'card'
   | 'checkmark'
   | 'chevronBottom'
   | 'chevronLeft'
@@ -129,6 +131,7 @@ export type IconType =
   | 'nftPlaceholder'
   | 'off'
   | 'playStore'
+  | 'plus'
   | 'qrCode'
   | 'recycleHorizontal'
   | 'refresh'
@@ -150,6 +153,7 @@ export type IconType =
 
 export type VisualType =
   | 'browser'
+  | 'coinbase'
   | 'dao'
   | 'defi'
   | 'defiAlt'
@@ -160,9 +164,9 @@ export type VisualType =
   | 'network'
   | 'nft'
   | 'noun'
+  | 'onrampCard'
   | 'profile'
   | 'system'
-  | 'coinbase'
 
 export type LogoType =
   | 'apple'
