@@ -42,7 +42,8 @@ function headings() {
     UpgradeWallet: 'Upgrade Wallet',
     OnRampProviders: 'Choose Provider',
     OnRampActivity: 'Activity',
-    WhatIsABuy: 'What is Buy?'
+    WhatIsABuy: 'What is Buy?',
+    BuyInProgress: 'Buy'
   }
 }
 
